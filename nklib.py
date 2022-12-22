@@ -26,7 +26,7 @@ def DG_Decode(data_bytes):
     return string
 
 # just hemis code but in python(js sucks)
-def saveDecode(txt, padded=None):
+def saveDecode(txt):
     salt = txt[52:76]
     encry = txt[76:]
     #key = hashlib.pbkdf2_hmac('sha1', b'11', salt, 10, dklen=32)
@@ -78,7 +78,6 @@ def fetchChallenge(code, type='custom'):
 
 # parses challenge data
 def challenge(data):
-    print(data)
     if 'normalDcm' in data.keys():
         data = data['normalDcm']
     elif 'challenge' in data.keys():
@@ -95,10 +94,9 @@ def challenge(data):
             elif item['tower'] != 'ChosenPrimaryHero':
                 output['hero'] = item['tower']
             elif item['tower'] == 'ChosenPrimaryHero':
-                print(item['tower'])
+                output['hero'] = 'ANY'
     output['modifiers'] = {}
     for item in data['bloonModifiers'].items():
-        print(item)
         if isinstance(item[1], dict):
             for iter in data['bloonModifiers']['healthMultipliers'].items():
                 if iter[1] != 1:
@@ -153,8 +151,6 @@ def allEvents(future=False):
         headers=headers,
     ).content
     schedule = parseEvents(DG_Decode(temp))
-    with open("events.json", "w") as f:
-        f.write(json.dumps(schedule))
     data = {
         "raceEvent": [],
         "odysseyEvent": [],
